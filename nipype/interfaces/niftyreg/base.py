@@ -48,7 +48,8 @@ def no_nifty_package(cmd='reg_f3d'):
 class NiftyRegCommandInputSpec(CommandLineInputSpec):
     """Input Spec for niftyreg interfaces."""
     # Set the number of omp thread to use
-    omp_core_val = traits.Int(1, desc='Number of openmp thread to use',
+    omp_core_val = traits.Int(os.environ.get('OMP_NUM_THREADS', 1),
+                              desc='Number of openmp thread to use',
                               argstr='-omp %i', usedefault=True)
 
 
