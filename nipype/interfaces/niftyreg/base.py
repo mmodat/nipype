@@ -60,6 +60,8 @@ class NiftyRegCommand(CommandLine):
     _suffix = '_nr'
     _min_version = '1.5.30'
 
+    input_spec = NiftyRegCommandInputSpec
+
     def __init__(self, required_version=None, **inputs):
         self.num_threads = 1
         super(NiftyRegCommand, self).__init__(**inputs)
