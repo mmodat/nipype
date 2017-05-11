@@ -16,8 +16,7 @@ Examples
 See the docstrings of the individual classes for examples.
 """
 
-from nipype.interfaces.niftyreg.base import no_nifty_package
-from nipype.interfaces.niftyfit.base import NiftyFitCommand
+from nipype.interfaces.niftyreg.base import NiftyRegCommand, no_nifty_package
 import subprocess
 import warnings
 
@@ -26,7 +25,7 @@ warn = warnings.warn
 warnings.filterwarnings('always', category=UserWarning)
 
 
-class NiftySegCommand(NiftyFitCommand):
+class NiftySegCommand(NiftyRegCommand):
     """
     Base support interface for NiftySeg commands.
     """
