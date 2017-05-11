@@ -129,13 +129,6 @@ class NiftyRegCommand(CommandLine):
     def exists(self):
         return self.get_version() is not None
 
-    def _run_interface(self, runtime):
-        # Update num threads estimate from OMP_NUM_THREADS env var
-        # Default to 1 if not set
-        if not isdefined(self.inputs.environ['OMP_NUM_THREADS']):
-            self.inputs.environ['OMP_NUM_THREADS'] = self.num_threads
-        return super(NiftyRegCommand, self)._run_interface(runtime)
-
     def _format_arg(self, name, spec, value):
         if name == 'omp_core_val':
             self.numthreads = value
