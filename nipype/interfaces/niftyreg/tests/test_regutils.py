@@ -278,12 +278,12 @@ def test_reg_average():
         argv = f_obj.read()
     os.remove(reg_average_cmd)
 
-    expected_argv = ('%s %s -avg_tran %s %s %s %s %s %s %s -omp 1'
+    expected_argv = ('%s %s -avg_tran %s -omp 1 %s %s %s %s %s %s'
                      % (get_custom_path('reg_average'),
                         os.path.join(os.getcwd(), 'avg_out.nii.gz'),
                         ref_file, trans1_file, one_file, trans2_file, two_file,
                         trans3_file, three_file))
-
+    
     assert argv.decode('utf-8') == expected_argv
 
     # Test Reg Average: demean3
@@ -311,7 +311,7 @@ def test_reg_average():
         argv = f_obj.read()
     os.remove(reg_average_cmd)
 
-    expected_argv = ('%s %s -demean3 %s %s %s %s %s %s %s %s %s %s -omp 1'
+    expected_argv = ('%s %s -demean3 %s -omp 1 %s %s %s %s %s %s %s %s %s'
                      % (get_custom_path('reg_average'),
                         os.path.join(os.getcwd(), 'avg_out.nii.gz'),
                         ref_file,
