@@ -26,7 +26,8 @@ import shutil
 import subprocess
 from warnings import warn
 
-from ..base import CommandLine, isdefined, CommandLineInputSpec, traits
+from ..base import (CommandLine, isdefined, CommandLineInputSpec, traits,
+                    Undefined)
 from ...utils.filemanip import split_filename
 
 
@@ -47,8 +48,8 @@ def no_nifty_package(cmd='reg_f3d'):
 class NiftyRegCommandInputSpec(CommandLineInputSpec):
     """Input Spec for niftyreg interfaces."""
     # Set the number of omp thread to use
-    omp_core_val = traits.Int(desc='Number of openmp thread to use',
-                              argstr='-omp %i')
+    omp_core_val = traits.Int(1, desc='Number of openmp thread to use',
+                              argstr='-omp %i', usedefault=True)
 
 
 class NiftyRegCommand(CommandLine):
@@ -58,7 +59,10 @@ class NiftyRegCommand(CommandLine):
     _suffix = '_nr'
     _min_version = '1.5.30'
 
+    input_spec = NiftyRegCommandInputSpec
+
     def __init__(self, required_version=None, **inputs):
+        self.num_threads = 1
         super(NiftyRegCommand, self).__init__(**inputs)
         self.required_version = required_version
         _version = self.get_version()
@@ -73,6 +77,29 @@ class NiftyRegCommand(CommandLine):
                     msg = 'The version of NiftyReg differs from the required'
                     msg += '(%s != %s)'
                     warn(msg % (_version, self.required_version))
+        self.inputs.on_trait_change(self._omp_update, 'omp_core_val')
+        self.inputs.on_trait_change(self._environ_update, 'environ')
+        self._omp_update()
+
+    def _omp_update(self):
+        if self.inputs.omp_core_val:
+            self.inputs.environ['OMP_NUM_THREADS'] = \
+                str(self.inputs.omp_core_val)
+            self.num_threads = self.inputs.omp_core_val
+        else:
+            if 'OMP_NUM_THREADS' in self.inputs.environ:
+                del self.inputs.environ['OMP_NUM_THREADS']
+            self.num_threads = 1
+
+    def _environ_update(self):
+        if self.inputs.environ:
+            if 'OMP_NUM_THREADS' in self.inputs.environ:
+                self.inputs.omp_core_val = \
+                    int(self.inputs.environ['OMP_NUM_THREADS'])
+            else:
+                self.inputs.omp_core_val = Undefined
+        else:
+            self.inputs.omp_core_val = Undefined
 
     def check_version(self):
         _version = self.get_version()
